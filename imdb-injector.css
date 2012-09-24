@@ -1,0 +1,29 @@
+div.friendScoreDetails {
+	background-color: white;
+	outline: 1px solid grey;
+	position: absolute;
+	padding: 0;
+	display: none;
+}
+div.friendScoreDetails.old {
+	margin: -.7em 0 0 3em;
+}
+div.friendScoreDetails.new {
+	margin: -1em 0 0 8em;
+}
+div.friendScoreDetails ul {
+	list-style-type: none;
+	width: 70px;
+	padding: .2em .4em;
+	margin: 0;
+}
+div.friendScoreDetails li {
+	padding: 0;
+	margin: 0;
+}
+#tn15main div.friends div.info {
+	overflow: visible !important;
+}
+#tn15content div.friends ul {
+	margin: 0 !important;
+}

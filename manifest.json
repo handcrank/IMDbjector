@@ -1,0 +1,28 @@
+{
+	"name": "IMDb Friendjeculator",
+	"version": "0.42-public",
+	"manifest_version": 2,
+	"description": "Squirts your friends' ratings into IMDb movie pages.",
+	"options_page": "options.html",
+	"content_scripts": [
+		{
+			"matches": ["http://www.imdb.com/title/tt*"],
+			"css": ["imdb-injector.css"],
+			"js": ["jquery-1.8.2.min.js", "imdb-injector.js"]
+		}
+	],
+	"icons": {
+		"16": "icon-16.png",
+		"48": "icon-128.png",
+		"128": "icon-128.png"
+	},
+	"page_action": {
+		"default_icon": "icon-16.png"
+	},
+	"background": {
+		"scripts": ["background.js"]
+	},
+	"permissions": [
+		"http://www.imdb.com/"
+	]
+}
