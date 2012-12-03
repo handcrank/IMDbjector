@@ -1,10 +1,21 @@
-#ttl {
+p {
+    margin: 1em 0 0 0;
+}
+#ttl, #historyLen {
     width: 2em;
     margin: 0 .1em;
 }
 fieldset {
     width: 22em;
     margin: 1em 0;
+}
+fieldset.history p {
+    margin: 0;
+    float: left;
+}
+fieldset.history aside {
+    font-size: 75%;
+    text-align: right;
 }
 #users {
     list-style-type: none;

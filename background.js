@@ -2,7 +2,8 @@
 // set defaults
 localStorage.setItem(DEFAULT_CONFIG_NAME, JSON.stringify({
 	users: [],
-	ttl: 3
+	cacheTtl: 3,
+	historyLen: 20
 }));
 // helper functions
 function getConfig() {
@@ -31,7 +32,7 @@ chrome.extension.onConnect.addListener(function (port) {
 				var userId = msg.userId;
 				// check data age
 				var lastUpdated = localStorage.getItem(LOCAL_STORAGE_CACHE_PREFIX + userId + LOCAL_STORAGE_CACHE_TIME_POSTFIX);
-				if (lastUpdated !== null && parseInt(lastUpdated) + (config.ttl * 3600) > now()) {
+				if (lastUpdated !== null && parseInt(lastUpdated) + (config.cacheTtl * 3600) > now()) {
 					port.postMessage({scoreData: dataForUser(userId)});
 					port.disconnect();
 				} else {
