@@ -2,15 +2,19 @@
 <html>
 	<head>
 		<title>Friendjeculator Configuration</title>
-		<style>
-		</style>
+		<link href="options.css" rel="stylesheet" type="text/css">
 		<script src="jquery-1.8.2.min.js"></script>
+		<script src="global.js"></script>
 		<script src="options.js"></script>
 	</head>
 	<body>
-		<p>
-			Cache data for <input id="ttl" value=""/> hour(s).
-		</p>
+		<fieldset>
+			<legend>Cache</legend>
+			<button id="purgeCache">discard cached data</button>
+			<p>
+				Cache data for <input id="ttl" value=""/> hour(s).
+			</p>
+		</fieldset>
 		<fieldset>
 			<legend>Friends</legend>
 			<button id="addUser">add another friend</button>
