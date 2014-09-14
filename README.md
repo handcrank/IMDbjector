@@ -16,7 +16,6 @@ Also gives you a list of your friends' recently rated movies (click on the exten
 - switch from localStorage to indexed DB (at least for the user/friend cache data)
 - remove code wrappings in some of the .js files (this shouldn't be needed in Chrome Extensions afaik, as they're running in their own environment anyway)
 - handle invalid/inaccessable user names better (maybe add a marker in options.html to usernames who's export data cannot be accessed; at the moment the user isn't really informed about this, except he'll never see that user listed with ratings)
-- parallel-ize score-data lookup/export list download. (had this parallel before we switched to ports for communication; should give a nice speed up)
 - tidy up the html generator functions, they look like dead babies in a blender.
 - add more useful comments, remove those that are less useful.
 - maek evurathing moa purtteh!

@@ -113,7 +113,7 @@
 		var port = chrome.extension.connect({name: "getScoreData"});
 		port.onDisconnect.addListener(function () {
 			if (!answered) {
-				callback(null, userId, movieId);
+				callback(null, userId);
 			}
 		});
 		port.onMessage.addListener(function (msg) {
@@ -123,7 +123,7 @@
 			var scoreRe = new RegExp(movieId + ':(\\d+)');
 			var score   = scoreRe.exec(scoreData ? scoreData : '');
 			// and report back
-			callback(score !== null ? parseInt(score[1]) : null, userId, movieId);
+			callback(score !== null ? parseInt(score[1]) : null, userId);
 		});
 		port.postMessage({userId: userId});
 	}
@@ -131,24 +131,23 @@
 	callWithScores(callback, userIds, movieId)
 		callback will be called with
 			scores (a dict/object, containing userId:rating)
-			userIds
-			movieId
 	*/
 	function callWithScores(callback, userIds, movieId) {
 		var scores = {};
-		var count  = userIds.length + 1;
-		// load scores (in serial)
-		function addScore(score, userId) {
-			if (score !== null) {
-				scores[userId] = score;
-			}
-			if (--count === 0) {
-				callback(scores, userIds, movieId);
-			} else {
-				callWithScore(addScore, userIds[count - 1], movieId);
-			}
+		var userCount = userIds.length;
+		if (!userCount) return scores;
+		// load scores
+		for (var i = userCount; i > 0; --i) {
+			callWithScore(function (score, userId) {
+				console.log(userId, score);
+				if (score !== null) {
+					scores[userId] = score;
+				}
+				if (--userCount === 0) {
+					callback(scores);
+				}
+			}, userIds[i - 1], movieId);
 		}
-		addScore(null);
 	}
 	// config/parameters
 	var _config = {};
@@ -177,8 +176,6 @@
 	chrome.extension.sendMessage({showIcon: true, sendConfig: true}, function (response) {
 		_config = response.config;
 		// injecting html
-		callWithScores(function (scores) {
-			injectScores(scores);
-		}, getUserIds(), getMovieId());
+		callWithScores(injectScores, getUserIds(), getMovieId());
 	});
 }(jQuery));
