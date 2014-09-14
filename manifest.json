@@ -22,7 +22,7 @@
 		"default_popup": "friend-history.html"
 	},
 	"background": {
-		"scripts": ["global.js", "background.js"]
+		"scripts": ["global.js", "config.js", "background.js"]
 	},
 	"permissions": [
 		"http://www.imdb.com/"

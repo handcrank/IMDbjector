@@ -5,6 +5,7 @@
 		<link href="options.css" rel="stylesheet" type="text/css">
 		<script src="jquery-2.1.1.min.js"></script>
 		<script src="global.js"></script>
+		<script src="config.js"></script>
 		<script src="options.js"></script>
 	</head>
 	<body>
@@ -18,7 +19,9 @@
 		<fieldset>
 			<legend>Friends</legend>
 			<button id="addUser">add another friend</button>
-			<ul id="users"></ul>
+			<button id="editUsers">edit as JSON</button>
+			<ul id="usersList"></ul>
+			<textarea id="usersJson"></textarea>
 		</fieldset>
 		<fieldset class="history">
 			<legend>History</legend>

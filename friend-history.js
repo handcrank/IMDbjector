@@ -1,12 +1,9 @@
 'use strict';
 // helpers (should probably be put in global.js and consolidated with others)
-function getConfig() {
-	return JSON.parse(localStorage.getItem(CONFIG_NAME) || localStorage.getItem(DEFAULT_CONFIG_NAME));
-}
 function now() {
 	return parseInt(new Date().getTime() / 1000);
 }
-var _config = getConfig();
+var _config = new Config;
 function getUserIds() {
 	var userIds = [];
 	for (var i in _config.users) {
@@ -110,7 +107,7 @@ $(function () {
 		var lastRated  = historyData[movieId][1];
 		//
 		$('<li/>')
-			.append( $('<a/>', {'class': 'title', href: 'http://www.imdb.com/title/' + movieId + '/'}).text(movieTitle) )
+			.append( $('<a/>', {'class': 'title', href: 'http://www.imdb.com/title/' + movieId + '/', target: '_blank'}).text(movieTitle) )
 			.append( $('<span/>', {'class': 'score'}).html('<strong>' + avgScore.toFixed(1) + '</strong>/10') )
 			.append( $('<span/>', {'class': 'rating-details'}).text('(' + ratingCount + ' vote' + (ratingCount>1?'s':'') + ')') )
 			.append( $('<span/>', {'class': 'age'}).text(prettyTimeFromSeconds(nowT - lastRated)) )

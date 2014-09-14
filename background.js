@@ -1,14 +1,6 @@
 'use strict';
-// set defaults
-localStorage.setItem(DEFAULT_CONFIG_NAME, JSON.stringify({
-	users: [],
-	cacheTtl: 3,
-	historyLen: 20
-}));
 // helper functions
-function getConfig() {
-	return JSON.parse(localStorage.getItem(CONFIG_NAME) || localStorage.getItem(DEFAULT_CONFIG_NAME));
-}
+var _config = new Config;
 function now() {
 	return parseInt(new Date().getTime() / 1000);
 }
@@ -19,7 +11,7 @@ chrome.extension.onMessage.addListener(function (request, sender, sendResponse) 
 		chrome.pageAction.show(sender.tab.id);
 	}
 	if (request.sendConfig) {
-		response.config = getConfig();
+		response.config = _config.data();
 	}
 	sendResponse(response);
 });
@@ -28,11 +20,10 @@ chrome.extension.onConnect.addListener(function (port) {
 	if (port.name === 'getScoreData') {
 		port.onMessage.addListener(function (msg) {
 			if (msg.userId) {
-				var config = getConfig();
 				var userId = msg.userId;
 				// check data age
 				var lastUpdated = localStorage.getItem(LOCAL_STORAGE_CACHE_PREFIX + userId + LOCAL_STORAGE_CACHE_TIME_POSTFIX);
-				if (lastUpdated !== null && parseInt(lastUpdated) + (config.cacheTtl * 3600) > now()) {
+				if (lastUpdated !== null && parseInt(lastUpdated) + (_config.cacheTtl * 3600) > now()) {
 					port.postMessage({scoreData: dataForUser(userId)});
 					port.disconnect();
 				} else {

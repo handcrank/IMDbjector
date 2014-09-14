@@ -17,7 +17,7 @@ fieldset.history aside {
     font-size: 75%;
     text-align: right;
 }
-#users {
+#usersList {
     list-style-type: none;
     margin: 1em 0 0 0;
     padding: 0;
@@ -29,4 +29,11 @@ fieldset.history aside {
 .user-id {
     width: 13em;
     margin-right: 1em;
+}
+#usersJson {
+    display: none;
+    margin: 1em 0 0 0;
+    padding: 0;
+    width: 100%;
+    height: 10em;
 }
