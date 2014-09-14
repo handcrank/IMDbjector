@@ -21,14 +21,19 @@ chrome.extension.onConnect.addListener(function (port) {
 		port.onMessage.addListener(function (msg) {
 			if (msg.userId) {
 				var userId = msg.userId;
-				// check data age
+				// Send any user data we have right now.
 				var lastUpdated = localStorage.getItem(LOCAL_STORAGE_CACHE_PREFIX + userId + LOCAL_STORAGE_CACHE_TIME_POSTFIX);
-				if (lastUpdated !== null && parseInt(lastUpdated) + (_config.cacheTtl * 3600) > now()) {
-					port.postMessage({scoreData: dataForUser(userId)});
+				var isOutdated = lastUpdated === null || now() > parseInt(lastUpdated) + (_config.cacheTtl * 3600);
+				var data = dataForUser(userId);
+				if (data) {
+					port.postMessage({scoreData: data, preliminary: isOutdated});
+				}
+				// Only if the user data is outdated, refresh & send again.
+				if (!isOutdated) {
 					port.disconnect();
 				} else {
 					refreshDataForUser(userId, function (scoreData) {
-						port.postMessage({scoreData: scoreData});
+						port.postMessage({scoreData: scoreData, preliminary: false});
 						port.disconnect();
 					});
 				}

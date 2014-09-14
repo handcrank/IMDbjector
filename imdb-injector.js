@@ -71,11 +71,16 @@
 		// aaand we're done, and it only hurt a little :)
 		return container;
 	}
-	function injectScores(scores) {
+	function updateScoreHtml(scores, context) {
 		var avgScore = average(values(scores));
 		var container = $('.star-box-details');
 		if (container.length) {
 			// new style
+			$('.friend-score', container).remove();
+			container = $('<span/>', {'class': 'friend-score'}).appendTo(container);
+			if (!context.done) {
+				container.css('font-style', 'italic');
+			}
 			var score = $('<strong/>').text('N/A');
 			var html = ['<br/>', 'Friends: ', score];
 			if (avgScore > 0) {
@@ -108,24 +113,27 @@
 		}
 	}
 	// access storage data
-	function callWithScore(callback, userId, movieId) {
-		var answered = false;
+	function callWithScore(callback, context) {
 		var port = chrome.extension.connect({name: "getScoreData"});
 		port.onDisconnect.addListener(function () {
-			if (!answered) {
-				callback(null, userId);
+			if (context.preliminary === true) {
+				console.warn('Only preliminary data received for user: ' + context.userId);
+			} else if (context.preliminary !== false) {
+				console.warn('No data received for user: ' + context.userId);
 			}
+			context.done = true;
+			callback(null, context);
 		});
 		port.onMessage.addListener(function (msg) {
-			answered = true;
+			context.preliminary = msg.preliminary;
 			var scoreData = msg.scoreData;
 			// search for the score
-			var scoreRe = new RegExp(movieId + ':(\\d+)');
+			var scoreRe = new RegExp(context.movieId + ':(\\d+)');
 			var score   = scoreRe.exec(scoreData ? scoreData : '');
 			// and report back
-			callback(score !== null ? parseInt(score[1]) : null, userId);
+			callback(score !== null ? parseInt(score[1]) : null, context);
 		});
-		port.postMessage({userId: userId});
+		port.postMessage({userId: context.userId});
 	}
 	/*
 	callWithScores(callback, userIds, movieId)
@@ -135,18 +143,21 @@
 	function callWithScores(callback, userIds, movieId) {
 		var scores = {};
 		var userCount = userIds.length;
-		if (!userCount) return scores;
+		if (!userCount) return callback(scores, {done: true});
 		// load scores
 		for (var i = userCount; i > 0; --i) {
-			callWithScore(function (score, userId) {
-				console.log(userId, score);
+			callWithScore(function (score, context) {
 				if (score !== null) {
-					scores[userId] = score;
+					scores[context.userId] = score;
 				}
-				if (--userCount === 0) {
-					callback(scores);
+				if (context.done) {
+					--userCount
 				}
-			}, userIds[i - 1], movieId);
+				callback(scores, {done: userCount === 0});
+			}, {
+				userId: userIds[i - 1],
+				movieId: movieId
+			});
 		}
 	}
 	// config/parameters
@@ -176,6 +187,6 @@
 	chrome.extension.sendMessage({showIcon: true, sendConfig: true}, function (response) {
 		_config = response.config;
 		// injecting html
-		callWithScores(injectScores, getUserIds(), getMovieId());
+		callWithScores(updateScoreHtml, getUserIds(), getMovieId());
 	});
 }(jQuery));
