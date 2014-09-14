@@ -77,18 +77,15 @@
 		if (container.length) {
 			// new style
 			var score = $('<strong/>').text('N/A');
+			var html = ['<br/>', 'Friends: ', score];
 			if (avgScore > 0) {
-				score = $('<strong/>')
-					.text(avgScore.toFixed(1))
-					.after($('<span/>', {'class': 'mellow'}).text('/10'))
-					.after(' (from ')
-					.after(friendScoreDetails(scores, 'new'))
-					.after(' of ' + getUserIds().length + ' friends)');
+				score.text(avgScore.toFixed(1));
+				html.push($('<span/>', {'class': 'mellow'}).text('/10'));
+				html.push(' (from ');
+				html.push(friendScoreDetails(scores, 'new'));
+				html.push(' of ' + getUserIds().length + ' friends)');
 			}
-			container
-				.append('<br/>')
-				.append('Friends: ')
-				.append(score);
+			container.append(html);
 		} else {
 			// old style
 			container = $('#tn15rating');
